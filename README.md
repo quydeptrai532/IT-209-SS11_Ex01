@@ -1,28 +1,85 @@
-# Spring Boot Gradle CI - Bài 1
+# Spring Boot CI with GitHub Actions
 
-Dự án Java 17 Spring Boot có REST API `/hello`, JUnit test và GitHub Actions chạy khi push lên `main`.
+## 1. Giới thiệu
 
-## Đẩy lên GitHub
+Dự án xây dựng quy trình Continuous Integration (CI) tự động cho ứng dụng Java Spring Boot sử dụng Gradle và GitHub Actions.
 
-Tạo repository trống trên GitHub, sau đó tại thư mục này chạy:
+Workflow tự động thực thi các bài kiểm thử JUnit khi có sự kiện `push` lên nhánh `main`, giúp kiểm tra tính ổn định của mã nguồn.
 
-```powershell
-git init
-git branch -M main
-git add .
-git commit -m "Submit exercise 1 CI"
-git remote add origin https://github.com/USERNAME/REPOSITORY.git
-git push -u origin main
+## 2. Công nghệ sử dụng
+
+- Java JDK 17 (Eclipse Temurin)
+- Spring Boot 3
+- Gradle 8
+- JUnit 5
+- GitHub Actions
+- Ubuntu Runner
+
+## 3. Cấu trúc dự án
+
+```text
+spring-boot-gradle-ci/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── gradle/
+│   └── wrapper/
+│       └── gradle-wrapper.properties
+├── src/
+│   ├── main/
+│   │   └── java/com/example/demo/
+│   │       ├── DemoApplication.java
+│   │       └── HelloController.java
+│   └── test/
+│       └── java/com/example/demo/
+│           ├── DemoApplicationTests.java
+│           └── HelloControllerTest.java
+├── build.gradle
+├── settings.gradle
+├── gradlew
+├── gradlew.bat
+└── README.md
 ```
 
-Thay `USERNAME` và `REPOSITORY` bằng thông tin của bạn. Vào tab **Actions** để xem job **Run Unit Tests**.
+## 4. Chức năng
 
-## Chạy test trên Windows
+Ứng dụng cung cấp REST API đơn giản:
 
-```powershell
-.\gradlew.bat test
+**Endpoint:** `GET /hello`
+
+**Response:**
+
+```text
+Hello CI!
 ```
 
-Dự án không sử dụng MySQL, tránh lỗi kết nối database khi test trên GitHub.
+Các bài kiểm thử bao gồm:
 
-**Lưu ý:** Các script `gradlew` và `gradlew.bat` trong bản đóng gói này là bootstrap tùy chỉnh tải Gradle 8.14.3 từ services.gradle.org, không phải Gradle Wrapper chính thức có `gradle-wrapper.jar`. Chúng vẫn hỗ trợ `./gradlew test` như bài yêu cầu. Khi có Gradle trên máy, có thể tạo wrapper chính thức bằng `gradle wrapper --gradle-version 8.14.3` rồi commit các file được sinh ra.
+- Kiểm tra khởi tạo Spring Application Context.
+- Kiểm tra kết quả trả về của HelloController.
+
+## 5. GitHub Actions Workflow
+
+Workflow được định nghĩa tại `.github/workflows/ci.yml`.
+
+Quy trình CI gồm các bước:
+
+1. Checkout mã nguồn từ GitHub Repository.
+2. Thiết lập môi trường Java JDK 17 với Eclipse Temurin.
+3. Cấp quyền thực thi cho Gradle.
+4. Thực thi JUnit Test bằng lệnh `./gradlew test`.
+5. Hiển thị kết quả kiểm thử trên GitHub Actions.
+
+## 6. Kết quả mong đợi
+
+Khi có mã nguồn được push lên nhánh `main`, GitHub Actions tự động kích hoạt workflow `Java Spring Boot CI (Gradle)`.
+
+Job `Run Unit Tests` hoàn thành với trạng thái **Success** khi toàn bộ bài kiểm thử thực thi thành công.
+
+## 7. Minh chứng
+
+Kết quả thực thi workflow được ghi nhận thông qua GitHub Actions, bao gồm trạng thái Job và chi tiết các bước kiểm thử.
+
+---
+
+**Bài thực hành 1:** Khởi tạo Workflow chạy Unit Test tự động cho Java Spring Boot với Gradle.
